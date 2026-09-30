@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bilgisayar başında çalışanlar için esneme molası ve su içme takip uygulaması.">
+  <title>Mikro Mola · Esneme &amp; Su Takibi</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%8F%B1%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+  </div>
+
+  <div class="app">
+
+    <!-- ============ ÜST BAR ============ -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon"><i data-lucide="timer"></i></div>
+        <div class="brand-text">
+          <h1>Mikro Mola</h1>
+          <p>Esneme &amp; su takibi</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="soundToggle" class="icon-btn" title="Sesi aç / kapat" aria-label="Sesi aç veya kapat"><i data-lucide="volume-2"></i></button>
+        <button id="themeToggle" class="icon-btn" title="Tema değiştir" aria-label="Koyu veya açık temayı değiştir"><i data-lucide="sun"></i></button>
+      </div>
+    </header>
+
+    <main class="grid">
+
+      <!-- ============ MOLA SAYACI ============ -->
+      <section class="card break-card" aria-labelledby="breakTitle">
+        <div class="card-head">
+          <h2 id="breakTitle"><i data-lucide="activity"></i><span>Mola Sayacı</span></h2>
+          <span class="pill" id="breakPill">Hazır</span>
+        </div>
+
+        <div class="timer-wrap" id="timerWrap">
+          <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#a78bfa"/>
+                <stop offset="100%" stop-color="#6366f1"/>
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="110" cy="110" r="96"/>
+            <circle class="ring-fg" cx="110" cy="110" r="96" id="ringFg"/>
+          </svg>
+          <div class="timer-display">
+            <span class="timer-time" id="breakTime">45:00</span>
+            <span class="timer-state" id="breakState">başlatılmayı bekliyor</span>
+          </div>
+        </div>
+
+        <div class="chips" id="durationChips" role="group" aria-label="Mola süresi seçimi">
+          <button class="chip" data-min="15">15 dk</button>
+          <button class="chip" data-min="25">25 dk</button>
+          <button class="chip" data-min="45">45 dk</button>
+          <button class="chip" data-min="60">60 dk</button>
+        </div>
+
+        <div class="timer-controls">
+          <button class="btn primary" id="breakStartBtn"><i data-lucide="play"></i><span>Başlat</span></button>
+          <button class="btn ghost" id="breakResetBtn"><i data-lucide="rotate-ccw"></i><span>Sıfırla</span></button>
+        </div>
+
+        <p class="hint"><i data-lucide="bell"></i> Süre dolduğunda hafif bir çan sesiyle esneme hareketleri ekrana gelir.</p>
+      </section>
+
+      <!-- ============ SU TAKİBİ ============ -->
+      <section class="card water-card" aria-labelledby="waterTitle">
+        <div class="card-head">
+          <h2 id="waterTitle"><i data-lucide="droplets"></i><span>Su Takibi</span></h2>
+          <span class="pill pill-su" id="waterPercent">%0</span>
+        </div>
+
+        <div class="water-visual">
+          <button class="bottle-btn" id="bottleBtn" title="Dokun = bir bardak su iç" aria-label="Bir bardak su iç">
+            <svg class="bottle-svg" viewBox="0 0 120 232" aria-hidden="true">
+              <defs>
+                <linearGradient id="waterGrad" gradientUnits="userSpaceOnUse" x1="0" y1="60" x2="0" y2="210">
+                  <stop offset="0%" stop-color="#7dd3fc"/>
+                  <stop offset="100%" stop-color="#0284c7"/>
+                </linearGradient>
+                <clipPath id="bottleClip">
+                  <path d="M47,26 L47,42 Q30,50 30,72 L30,192 Q30,210 49,210 L71,210 Q90,210 90,192 L90,72 Q90,50 73,42 L73,26 Z"/>
+                </clipPath>
+                <clipPath id="liquidClip">
+                  <rect id="liquidClipRect" x="24" y="210" width="72" height="0"/>
+                </clipPath>
+              </defs>
+
+              <rect id="liquidRect" x="24" y="210" width="72" height="0" fill="url(#waterGrad)" clip-path="url(#bottleClip)"/>
+
+              <g id="liquidSurfacePos" clip-path="url(#bottleClip)">
+                <g class="wave-drift back">
+                  <path fill="#bae6fd" opacity="0.45" d="M-120,3 Q-90,-4 -60,3 T0,3 T60,3 T120,3 T180,3 T240,3 L240,60 L-120,60 Z"/>
+                </g>
+                <g class="wave-drift front">
+                  <path fill="url(#waterGrad)" d="M-120,0 Q-90,-6 -60,0 T0,0 T60,0 T120,0 T180,0 T240,0 L240,60 L-120,60 Z"/>
+                </g>
+              </g>
+
+              <g class="bubbles" clip-path="url(#liquidClip)">
+                <circle class="bub" cx="46" cy="204" r="3"/>
+                <circle class="bub" cx="60" cy="206" r="4"/>
+                <circle class="bub" cx="74" cy="203" r="2.5"/>
+                <circle class="bub" cx="53" cy="205" r="2"/>
+                <circle class="bub" cx="68" cy="204" r="3"/>
+              </g>
+
+              <path class="bottle-outline" d="M47,26 L47,42 Q30,50 30,72 L30,192 Q30,210 49,210 L71,210 Q90,210 90,192 L90,72 Q90,50 73,42 L73,26 Z"/>
+              <rect class="bottle-cap" x="43" y="8" width="34" height="16" rx="6"/>
+              <path class="bottle-shine" d="M37,74 Q34,120 38,168" fill="none"/>
+            </svg>
+            <span class="bottle-pct" id="bottlePct">%0</span>
+          </button>
+
+          <div class="water-info">
+            <div class="water-nums">
+              <span class="big" id="waterCurrent">0</span>
+              <span class="unit">/ <span id="waterGoal">2.000</span> ml</span>
+            </div>
+            <p class="water-remaining" id="waterRemaining">Hedefe kalan: 2.000 ml</p>
+
+            <button class="btn su" id="addWaterBtn">
+              <span class="glass-ic" aria-hidden="true">
+                <svg viewBox="0 0 40 48">
+                  <path class="glass-body" d="M9,6 H31 L28,41 Q27.5,45 23.5,45 H16.5 Q12.5,45 12,41 Z"/>
+                  <path class="glass-water" d="M12.6,26 H27.4 L26,40.5 Q25.7,43 23.5,43 H16.5 Q14.3,43 14,40.5 Z"/>
+                </svg>
+              </span>
+              <span>Bir bardak iç <b id="glassLabel">(+200 ml)</b></span>
+            </button>
+            <button class="btn text" id="undoWaterBtn"><i data-lucide="undo-2"></i><span>Son yudumu geri al</span></button>
+          </div>
+        </div>
+
+        <div class="water-settings">
+          <div class="setting">
+            <span class="setting-label"><i data-lucide="trophy"></i> Günlük hedef</span>
+            <div class="chips" id="goalChips" role="group" aria-label="Günlük su hedefi">
+              <button class="chip" data-ml="1500">1.5 L</button>
+              <button class="chip" data-ml="2000">2 L</button>
+              <button class="chip" data-ml="2500">2.5 L</button>
+              <button class="chip" data-ml="3000">3 L</button>
+              <button class="chip" data-ml="3500">3.5 L</button>
+              <button class="chip" data-ml="4000">4 L</button>
+            </div>
+          </div>
+          <div class="setting">
+            <span class="setting-label"><i data-lucide="glass-water"></i> Bardak boyutu</span>
+            <div class="chips" id="glassChips" role="group" aria-label="Bardak boyutu">
+              <button class="chip" data-ml="200">200 ml</button>
+              <button class="chip" data-ml="400">400 ml</button>
+              <button class="chip" data-ml="500">0.5 L</button>
+              <button class="chip" data-ml="1000">1 L</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="reminder-row">
+          <label class="switch-row" for="waterReminderToggle">
+            <span class="switch-label"><i data-lucide="alarm-clock"></i> Saatlik su hatırlatıcısı</span>
+            <span class="switch">
+              <input type="checkbox" id="waterReminderToggle" checked>
+              <span class="slider"></span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <!-- ============ GEÇMİŞ ============ -->
+      <section class="card history-card" aria-labelledby="histTitle">
+        <div class="card-head">
+          <h2 id="histTitle"><i data-lucide="bar-chart-3"></i><span>Son 7 Gün</span></h2>
+          <span class="pill" id="streakPill">💧 seri yok</span>
+        </div>
+        <div class="chart" id="historyChart"></div>
+        <p class="hint center">Bugün: <b id="todayGlasses">0 bardak</b> · Tüm veriler yalnızca bu tarayıcıda (LocalStorage) saklanır.</p>
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <i data-lucide="sparkles"></i> küçük molalar, büyük fark · Mikro Mola
+    </footer>
+  </div>
+
+  <!-- ============ EGZERSİZ MODALI ============ -->
+  <div class="modal-backdrop" id="exerciseModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="exName">
+      <div class="modal-head">
+        <div class="modal-title">
+          <span class="modal-emoji">🧘</span>
+          <div>
+            <h2>Mola Zamanı!</h2>
+            <p id="exTotalInfo">5 hareket · her mola farklı rutin</p>
+          </div>
+        </div>
+        <button class="icon-btn" id="exClose" title="Molayı bitir" aria-label="Molayı bitir"><i data-lucide="check"></i></button>
+      </div>
+
+      <div class="exercise-stage" id="exerciseStage" data-anim="neck">
+        <svg class="fig-svg" viewBox="-100 -144 200 220" aria-hidden="true">
+          <ellipse class="fig-shadow" cx="0" cy="63" rx="30" ry="6"/>
+          <!-- sandalye (yalnızca otururken görünür) -->
+          <g class="chair">
+            <rect class="chair-seat" x="-24" y="-5" width="48" height="9" rx="3"/>
+            <rect class="chair-leg" x="-21" y="4" width="4" height="42" rx="2"/>
+            <rect class="chair-leg" x="17" y="4" width="4" height="42" rx="2"/>
+          </g>
+          <g class="fig-all">
+            <!-- bacaklar -->
+            <g class="fig-hip">
+              <!-- ayakta duran bacaklar -->
+              <g class="legs-stand">
+                <g transform="translate(-7,-6)">
+                  <g class="fig-leg fig-leg-l">
+                    <path class="fig-limb l-thigh" d="M0,0 Q-2,16 -4,32"/>
+                    <path class="fig-limb l-thigh-o" d="M0,0 L-2.4,21"/>
+                    <g transform="translate(-4,32)">
+                      <g class="fig-shin fig-shin-l">
+                        <path class="fig-limb l-shin" d="M0,0 Q-1,14 -2,30"/>
+                        <path class="fig-limb l-calf-o" d="M0,0 L-1,13"/>
+                        <ellipse class="fig-foot" cx="-6" cy="31" rx="8" ry="4"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+                <g transform="translate(7,-6)">
+                  <g class="fig-leg fig-leg-r">
+                    <path class="fig-limb l-thigh" d="M0,0 Q2,16 4,32"/>
+                    <path class="fig-limb l-thigh-o" d="M0,0 L2.4,21"/>
+                    <g transform="translate(4,32)">
+                      <g class="fig-shin fig-shin-r">
+                        <path class="fig-limb l-shin" d="M0,0 Q1,14 2,30"/>
+                        <path class="fig-limb l-calf-o" d="M0,0 L1,13"/>
+                        <ellipse class="fig-foot" cx="6" cy="31" rx="8" ry="4"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+              <!-- oturur pozisyon bacakları -->
+              <g class="legs-sit">
+                <g transform="translate(-6,2)">
+                  <g class="fig-leg sit-leg-l">
+                    <path class="fig-limb l-thigh" d="M0,0 L-3,7"/>
+                    <g transform="translate(-3,7)">
+                      <g class="fig-shin sit-shin-l">
+                        <path class="fig-limb l-shin" d="M0,0 Q-1,15 -2,32"/>
+                        <ellipse class="fig-foot" cx="-4" cy="33" rx="8" ry="4"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+                <g transform="translate(6,2)">
+                  <g class="fig-leg sit-leg-r">
+                    <path class="fig-limb l-thigh" d="M0,0 L3,7"/>
+                    <g transform="translate(3,7)">
+                      <g class="fig-shin sit-shin-r">
+                        <path class="fig-limb l-shin" d="M0,0 Q1,15 2,32"/>
+                        <ellipse class="fig-foot" cx="4" cy="33" rx="8" ry="4"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <!-- gövde, baş ve kollar -->
+            <g class="fig-upper">
+              <path class="fig-torso" d="M-17.5,-70 C-18.5,-58 -15,-44 -11.5,-26 C-10,-18 -13,-13 -13,-4 L13,-4 C13,-13 10,-18 11.5,-26 C15,-44 18.5,-58 17.5,-70 C10.5,-74 -10.5,-74 -17.5,-70 Z"/>
+              <path class="fig-neck" d="M-4.5,-84 L4.5,-84 L5.8,-68 L-5.8,-68 Z"/>
+              <g class="fig-head">
+                <circle class="fig-head-fill" cx="0" cy="-94" r="12.5"/>
+              </g>
+              <g transform="translate(-17,-64)">
+                <g class="fig-arm fig-arm-l">
+                  <path class="fig-limb l-uarm" d="M0,0 Q-3,15 -6,30"/>
+                  <path class="fig-limb l-delt-o" d="M0,0 L-3,18"/>
+                  <g transform="translate(-6,30)">
+                    <g class="fig-fore fig-fore-l">
+                      <path class="fig-limb l-farm" d="M0,0 Q-1.5,13 -3,26"/>
+                      <path class="fig-limb l-fore-o" d="M0,0 L-1.5,13"/>
+                      <rect class="fig-hand" x="-8" y="23.5" width="8" height="13" rx="4"/>
+                    </g>
+                  </g>
+                </g>
+              </g>
+              <g transform="translate(17,-64)">
+                <g class="fig-arm fig-arm-r">
+                  <path class="fig-limb l-uarm" d="M0,0 Q3,15 6,30"/>
+                  <path class="fig-limb l-delt-o" d="M0,0 L3,18"/>
+                  <g transform="translate(6,30)">
+                    <g class="fig-fore fig-fore-r">
+                      <path class="fig-limb l-farm" d="M0,0 Q1.5,13 3,26"/>
+                      <path class="fig-limb l-fore-o" d="M0,0 L1.5,13"/>
+                      <rect class="fig-hand" x="0" y="23.5" width="8" height="13" rx="4"/>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>
+
+        <svg class="eyes-svg" viewBox="0 0 220 90" aria-hidden="true">
+          <g class="eye">
+            <ellipse class="eye-white" cx="60" cy="45" rx="38" ry="26"/>
+            <circle class="pupil" cx="60" cy="45" r="11"/>
+          </g>
+          <g class="eye">
+            <ellipse class="eye-white" cx="160" cy="45" rx="38" ry="26"/>
+            <circle class="pupil" cx="160" cy="45" r="11"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="ex-meta">
+        <h3 id="exName">Boyun Esnetme</h3>
+        <p id="exDesc">Başını yavaşça sağa ve sola yatır.</p>
+      </div>
+
+      <div class="ex-timer-row">
+        <div class="ex-timer">
+          <svg viewBox="0 0 36 36" class="ex-ring" aria-hidden="true">
+            <circle class="ex-ring-bg" cx="18" cy="18" r="15.5"/>
+            <circle class="ex-ring-fg" id="exRingFg" cx="18" cy="18" r="15.5"/>
+          </svg>
+          <span id="exTime">25</span>
+        </div>
+        <div class="ex-dots" id="exDots"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn ghost sm" id="exPrev"><i data-lucide="chevron-left"></i><span>Önceki</span></button>
+        <button class="btn ghost sm" id="exSkip"><span>Sonraki</span><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script src="/static/vendor/lucide.min.js"></script>
+  <script src="/static/vendor/confetti.browser.min.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
