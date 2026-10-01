@@ -4,8 +4,28 @@ Kahve zincirleri ve küçük işletmeler için **stok, SKT (Son Kullanma Tarihi)
 iOS, Android ve Web istemcilerine hizmet verecek şekilde tasarlanmıştır.
 
 - **Backend:** Laravel 13 (PHP 8.5) REST API
+- **Web arayüzü:** React 19 + TypeScript + Tailwind CSS (`web/` klasörü)
 - **Kimlik doğrulama:** Laravel Sanctum (Bearer token)
 - **Veritabanı:** Geliştirmede SQLite, üretimde PostgreSQL (Supabase / Render uyumlu)
+
+## Web Arayüzü (`web/`)
+
+Vite + React SPA; Vercel'e deploy için hazırdır (`web/vercel.json` SPA rewrite içerir).
+
+```bash
+cd web
+npm install
+npm run dev        # http://localhost:5173 (API çağrıları :8000'e proxy'lenir)
+npm run build      # üretim derlemesi -> dist/
+```
+
+Sayfalar: Kayıt/Giriş, Uyarı Paneli (yaklaşan SKT / kritik stok), Ürünler (arama + kritik filtre),
+Ürün Detayı (partiler + stok girişi/FIFO çıkışı), İrsaliye Yükleme (**sürükle-bırak + panodan
+yapıştırma**), Çalışan Yönetimi (admin). Rol bazlı arayüz: çalışanlar yalnızca okuma ve stok düşme
+ekranlarını görür.
+
+Vercel'de `VITE_API_URL` ortam değişkenini API adresine ayarlayın
+(ör. `https://stoktakip-api.onrender.com/api/v1`).
 
 ## Roller
 
@@ -143,5 +163,7 @@ mobil uygulamalar doğrudan Render URL'sini kullanır.
 - [x] Parti girişi ve FIFO stok çıkışı (`/api/v1/batches`, `/api/v1/stock-movements`)
 - [x] Yaklaşan SKT & kritik stok uyarı ucu (`/api/v1/alerts`)
 - [x] İrsaliye fotoğrafı yükleme (`/api/v1/attachments`, multipart; mobil kamera ve web için)
+- [x] Web arayüzü: React SPA — panel, ürünler, stok akışı, irsaliye yükleme (yapıştırma dahil), çalışanlar
 - [ ] Push/eposta bildirimleri (alerts ucundan türetilecek zamanlanmış görev)
+- [ ] Mobil uygulamalar (iOS/Android — React Native/Expo önerilir; API hazır)
 - [ ] **StokAI**: `attachments.ocr_*` alanları üzerinden irsaliye OCR okuma
