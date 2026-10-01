@@ -1,0 +1,55 @@
+# Render Blueprint — StokTakip API
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: stoktakip-api
+    runtime: php
+    plan: free
+    buildCommand: |
+      export PATH="$PATH:/usr/local/bin"
+      composer install --no-dev --optimize-autoloader
+      php artisan key:generate --force
+      php artisan config:cache
+      php artisan route:cache
+    startCommand: php artisan serve --host 0.0.0.0 --port $PORT
+    healthCheckPath: /up
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://stoktakip-api.onrender.com
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: stoktakip_db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: stoktakip_db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: stoktakip_db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: stoktakip_db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: stoktakip_db
+          property: password
+
+databases:
+  - name: stoktakip_db
+    plan: free
+    databaseName: stoktakip
+    user: stoktakip
+
+# İlk dağıtımda tablolar oluşsun:
+#   render.yaml ile kurulum sonrası Render shell'den: php artisan migrate --force
