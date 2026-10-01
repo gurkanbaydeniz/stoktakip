@@ -24,6 +24,7 @@ class BatchStoreRequest extends FormRequest
             'supplier_name' => ['nullable', 'string', 'max:150'],
             'unit_cost' => ['nullable', 'numeric', 'min:0'],
             'waybill_number' => ['nullable', 'string', 'max:100'],
+            'waybill_number' => ['nullable', 'string', 'max:100'],
             'note' => ['nullable', 'string', 'max:1000'],
         ];
     }

@@ -80,6 +80,7 @@ class StockFlowTest extends TestCase
             'product_id' => $productId,
             'type' => 'in',
             'quantity' => 24,
+            'waybill_number' => 'IRS-001',
         ]);
     }
 

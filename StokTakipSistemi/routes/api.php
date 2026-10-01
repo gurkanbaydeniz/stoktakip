@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AlertController;
+use App\Http\Controllers\Api\V1\AttachmentController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BatchController;
 use App\Http\Controllers\Api\V1\CompanyController;
@@ -53,5 +54,14 @@ Route::prefix('v1')->group(function (): void {
 
         // Uyarılar: yaklaşan SKT / geçmiş SKT / kritik stok (bildirim altyapısının kaynağı).
         Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.index');
+
+        // İrsaliye/fotoğraf ekleri: okuma ve indirme herkes; yükleme/silme admin.
+        Route::get('/attachments', [AttachmentController::class, 'index'])->name('attachments.index');
+        Route::get('/attachments/{attachment}', [AttachmentController::class, 'show'])->name('attachments.show');
+        Route::get('/attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download');
+        Route::middleware('admin')->group(function (): void {
+            Route::post('/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+            Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
+        });
     });
 });

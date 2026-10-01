@@ -19,4 +19,17 @@ abstract class TestCase extends BaseTestCase
 
         return $this->withHeader('Authorization', "Bearer {$token}");
     }
+
+    /**
+     * Misafir (token'sız) istek atar: kalıcı header'ları ve guard önbelleğini
+     * temizler (withHeader/withSanctumToken test boyunca kalıcıdır).
+     */
+    protected function asGuest(): static
+    {
+        if ($this->app) {
+            $this->app->make('auth')->forgetGuards();
+        }
+
+        return $this->flushHeaders();
+    }
 }

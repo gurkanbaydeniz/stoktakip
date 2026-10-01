@@ -74,6 +74,11 @@ Tüm uçlar `Accept: application/json` bekler. Korunan uçlarda `Authorization: 
 | GET | `/api/v1/stock-movements` | token | Hareket geçmişi. Filtreler: `?product_id=`, `?type=` |
 | POST | `/api/v1/stock-movements` | token | **Stok çıkışı** (`type: out`, FIFO — SKT'si en yakın partiden) veya **sayım düzeltmesi** (`type: adjustment`, admin) |
 | GET | `/api/v1/alerts` | token | Uyarılar: `expiring_batches`, `expired_batches`, `low_stock_products`. `?days=` (varsayılan 30) |
+| GET | `/api/v1/attachments` | token | Ek listesi. Filtreler: `?batch_id=`, `?kind=waybill\|product_photo\|other`, `?ocr_status=` |
+| POST | `/api/v1/attachments` | admin | **Dosya yükleme** (multipart `file`; jpg/png/webp/heic/pdf, maks 10 MB). `kind`, `batch_id` opsiyonel |
+| GET | `/api/v1/attachments/{id}` | token | Ek meta bilgisi |
+| GET | `/api/v1/attachments/{id}/download` | token | Kimlik doğrulamalı indirme (`?inline=1` ile görüntüleme) |
+| DELETE | `/api/v1/attachments/{id}` | admin | Eki ve dosyayı siler |
 
 ### Stok kuralları
 
@@ -137,6 +142,6 @@ mobil uygulamalar doğrudan Render URL'sini kullanır.
 - [x] Ürün CRUD + barkod + kritik stok sınırı (`/api/v1/products`)
 - [x] Parti girişi ve FIFO stok çıkışı (`/api/v1/batches`, `/api/v1/stock-movements`)
 - [x] Yaklaşan SKT & kritik stok uyarı ucu (`/api/v1/alerts`)
-- [ ] İrsaliye fotoğrafı yükleme (`/api/v1/attachments`, multipart)
+- [x] İrsaliye fotoğrafı yükleme (`/api/v1/attachments`, multipart; mobil kamera ve web için)
 - [ ] Push/eposta bildirimleri (alerts ucundan türetilecek zamanlanmış görev)
 - [ ] **StokAI**: `attachments.ocr_*` alanları üzerinden irsaliye OCR okuma
