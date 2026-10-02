@@ -1,0 +1,12 @@
+vendor
+node_modules
+web
+.git
+.env
+.env.backup
+database/database.sqlite
+storage/app/private/attachments
+storage/logs/*.log
+*.log
+.DS_Store
+Thumbs.db
