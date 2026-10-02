@@ -133,10 +133,28 @@ curl -X POST http://127.0.0.1:8000/api/v1/company/staff \
 
 ## Deployment
 
-### Render (önerilen backend barındırma)
+### 1) API → Render
 
-Kök dizindeki `render.yaml` blueprint'i kullanılabilir: PHP servisi + PostgreSQL,
-`composer install` sonrası `php artisan migrate --force` çalıştırır.
+1. GitHub'a push'layın (repo: `gurkanbaydeniz/mikro-mola`).
+2. [render.com](https://render.com) → **New → Blueprint** → repo'yu seçin.
+   `render.yaml` otomatik olarak PHP servisi + ücretsiz PostgreSQL kurar;
+   build sırasında `composer install`, `config:cache`, `route:cache` ve
+   `migrate --force` çalışır.
+3. Servis ayarlarında **APP_KEY**'i Dashboard'dan bir kez girin
+   (veya Render secret dosyası kullanın); `key:generate --force` her deploy'da
+   yeniler — token'ların geçersizleşmemesi için APP_KEY'i sabitlemek daha iyidir.
+4. API adresi: `https://<servis-adı>.onrender.com` → sağlık kontrolü: `/up`
+
+> ⚠️ Ücretsiz planda kalıcı disk yok: `storage/app/private`'a yüklenen irsaliye
+> dosyaları yeniden başlatmada kaybolur. Kalıcılık için Supabase Storage / R2
+> eklenmesi planlandı (roadmap).
+
+### 2) Web → Vercel
+
+1. [vercel.com](https://vercel.com) → **Add New → Project** → repo'yu import edin.
+2. **Root Directory**: `web/` olarak seçin (Framework: Vite, otomatik algılanır).
+3. Environment Variable: `VITE_API_URL` = `https://<render-servis-adı>.onrender.com/api/v1`
+4. Deploy → adres hazır.
 
 ### Supabase (PostgreSQL)
 
