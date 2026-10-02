@@ -7,8 +7,6 @@ services:
     runtime: docker
     plan: free
     rootDir: StokTakipSistemi
-    dockerfilePath: StokTakipSistemi/Dockerfile
-    dockerContext: StokTakipSistemi
     healthCheckPath: /up
     envVars:
       - key: APP_ENV
