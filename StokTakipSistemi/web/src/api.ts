@@ -60,7 +60,8 @@ export async function api<T>(path: string, options: ApiOptions = {}): Promise<T>
   if (token) headers.Authorization = `Bearer ${token}`
   if (json !== undefined) headers['Content-Type'] = 'application/json'
 
-  const response = await fetch(url.pathname + url.search, {
+  // url.toString(): API_URL tam adres ise ona, göreliyse (dev proxy) SPA köküne gider
+  const response = await fetch(url.toString(), {
     method,
     headers,
     body: json !== undefined ? JSON.stringify(json) : form,
