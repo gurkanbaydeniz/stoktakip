@@ -8,6 +8,15 @@ iOS, Android ve Web istemcilerine hizmet verecek şekilde tasarlanmıştır.
 - **Kimlik doğrulama:** Laravel Sanctum (Bearer token)
 - **Veritabanı:** Geliştirmede SQLite, üretimde PostgreSQL (Supabase / Render uyumlu)
 
+## Canlı Adresler
+
+| Katman | Adres |
+|---|---|
+| API (Render) | https://stoktakip-api-39os.onrender.com/up |
+| Web arayüzü (Vercel) | https://stoktakip-seven.vercel.app |
+
+Her push'ta her iki katman da otomatik yeniden dağıtılır (Render Blueprint + Vercel).
+
 ## Web Arayüzü (`web/`)
 
 Vite + React SPA; Vercel'e deploy için hazırdır (`web/vercel.json` SPA rewrite içerir).
