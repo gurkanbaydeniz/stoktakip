@@ -135,11 +135,11 @@ curl -X POST http://127.0.0.1:8000/api/v1/company/staff \
 
 ### 1) API → Render
 
-1. GitHub'a push'layın (repo: `gurkanbaydeniz/stoktakip`).
+1. GitHub'a push'layın (repo: `gurkanbaydeniz/stoktakip`; proje `StokTakipSistemi/` alt klasöründedir).
 2. [render.com](https://render.com) → **New → Blueprint** → repo'yu seçin.
-   `render.yaml` otomatik olarak PHP servisi + ücretsiz PostgreSQL kurar;
-   build sırasında `composer install`, `config:cache`, `route:cache` ve
-   `migrate --force` çalışır.
+   **Blueprint Path** alanına `StokTakipSistemi/render.yaml` yazın
+   (depo kökünde değil, alt klasördedir).
+   `render.yaml` PHP servisi + ücretsiz PostgreSQL kurar; Docker build + migrate otomatiktir.
 3. Servis ayarlarında **APP_KEY**'i Dashboard'dan bir kez girin
    (veya Render secret dosyası kullanın); `key:generate --force` her deploy'da
    yeniler — token'ların geçersizleşmemesi için APP_KEY'i sabitlemek daha iyidir.
@@ -152,7 +152,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/company/staff \
 ### 2) Web → Vercel
 
 1. [vercel.com](https://vercel.com) → **Add New → Project** → repo'yu import edin.
-2. **Root Directory**: `web/` olarak seçin (Framework: Vite, otomatik algılanır).
+2. **Root Directory**: `StokTakipSistemi/web` olarak seçin (Framework: Vite, otomatik algılanır).
 3. Environment Variable: `VITE_API_URL` = `https://<render-servis-adı>.onrender.com/api/v1`
 4. Deploy → adres hazır.
 
