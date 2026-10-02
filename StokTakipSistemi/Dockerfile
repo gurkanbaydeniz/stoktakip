@@ -14,12 +14,15 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Önce bağımlılıklar (Docker katman önbelleği için)
+# Önce bağımlılıklar (Docker katman önbelleği için).
+# --no-scripts: package:discover gibi scriptler artisan ister; kod henüz yok.
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress --no-scripts
 
-# Uygulama kodu
+# Uygulama kodu; şimdi script'leri çalıştır
 COPY . .
+RUN composer dump-autoload --optimize --no-interaction \
+    && php artisan package:discover --ansi
 
 EXPOSE 10000
 

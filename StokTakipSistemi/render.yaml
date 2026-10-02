@@ -14,7 +14,7 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_URL
-        value: https://stoktakip-api.onrender.com
+        value: https://stoktakip-api-39os.onrender.com
       - key: LOG_CHANNEL
         value: stderr
       - key: DB_CONNECTION
