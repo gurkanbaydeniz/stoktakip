@@ -59,11 +59,11 @@ class StockService
     public function stockOut(User $actor, Product $product, float $quantity, ?Batch $specificBatch = null, ?string $note = null): array
     {
         return DB::transaction(function () use ($actor, $product, $quantity, $specificBatch, $note): array {
+            // Not: PG'de aggregate SUM ile FOR UPDATE bir arada kullanılamaz;
+            // kilit, fifoBatches/specificBatch üzerinden alınan satır kilitleriyle sağlanır.
             $batches = ($specificBatch !== null ? collect([$specificBatch]) : $this->fifoBatches($product))
                 ->mapWithKeys(fn (Batch $batch) => [
-                    $batch->id => (float) $batch->stockMovements()
-                        ->lockForUpdate()
-                        ->sum('quantity'),
+                    $batch->id => (float) $batch->stockMovements()->sum('quantity'),
                 ]);
 
             $available = $batches->sum();
@@ -106,7 +106,7 @@ class StockService
     public function adjust(User $actor, Product $product, float $signedQuantity, ?int $batchId = null, ?string $note = null): StockMovement
     {
         return DB::transaction(function () use ($actor, $product, $signedQuantity, $batchId, $note): StockMovement {
-            $currentStock = (float) $product->stockMovements()->lockForUpdate()->sum('quantity');
+            $currentStock = (float) $product->stockMovements()->sum('quantity');
 
             if ($currentStock + $signedQuantity < -0.0001) {
                 throw ValidationException::withMessages([
