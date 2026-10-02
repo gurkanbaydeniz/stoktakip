@@ -135,7 +135,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/company/staff \
 
 ### 1) API → Render
 
-1. GitHub'a push'layın (repo: `gurkanbaydeniz/mikro-mola`).
+1. GitHub'a push'layın (repo: `gurkanbaydeniz/stoktakip`).
 2. [render.com](https://render.com) → **New → Blueprint** → repo'yu seçin.
    `render.yaml` otomatik olarak PHP servisi + ücretsiz PostgreSQL kurar;
    build sırasında `composer install`, `config:cache`, `route:cache` ve
