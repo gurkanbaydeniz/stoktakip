@@ -6,7 +6,6 @@ services:
     name: stoktakip-api
     runtime: docker
     plan: free
-    rootDir: StokTakipSistemi
     healthCheckPath: /up
     envVars:
       - key: APP_ENV
